@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sudoku_nav"
+    app:startDestination="@id/fragmentEntry">
+
+    <fragment
+        android:id="@+id/fragmentEntry"
+        android:name="com.example.sudoku.FragmentEntry"
+        android:label="fragment_entry"
+        tools:layout="@layout/fragment_entry" >
+        <action
+            android:id="@+id/action_fragmentEntry_to_fragmentStart"
+            app:destination="@id/fragmentStart" />
+        <action
+            android:id="@+id/action_fragmentEntry_to_fragmentTable2"
+            app:destination="@id/fragmentTable" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentStart"
+        android:name="com.example.sudoku.Start.FragmentStart"
+        android:label="fragment_start"
+        tools:layout="@layout/fragment_start" >
+        <action
+            android:id="@+id/action_fragmentStart_to_fragmentGame2"
+            app:destination="@id/fragmentGame" />
+        <action
+            android:id="@+id/action_fragmentStart_to_fragmentEntry"
+            app:destination="@id/fragmentEntry" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentGame"
+        android:name="com.example.sudoku.FragmentGame"
+        android:label="fragment_game"
+        tools:layout="@layout/fragment_game" >
+        <action
+            android:id="@+id/action_fragmentGame2_to_fragmentTable2"
+            app:destination="@id/fragmentTable" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentTable"
+        android:name="com.example.sudoku.Table.FragmentTable"
+        android:label="fragment_table_list"
+        tools:layout="@layout/fragment_table_list" >
+        <action
+            android:id="@+id/action_fragmentTable2_to_fragmentEntry"
+            app:destination="@id/fragmentEntry" />
+    </fragment>
+    <action android:id="@+id/action_global_fragmentEntry" app:destination="@id/fragmentEntry" />
+</navigation>

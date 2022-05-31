@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Sudoku</string>
+    <string name="startText">Start</string>
+    <string name="quitText">Exit</string>
+    <string name="tableText">Ranking</string>
+    <string name="easyText">Easy</string>
+    <string name="MediumText">Medium</string>
+    <string name="hardText">Hard</string>
+    <string name="goBackText">Go Back</string>
+    <string name="goToMenuText">Menu</string>
+</resources>

@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Sudoku</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="startText">Start</string>
+    <string name="quitText">Quit</string>
+    <string name="tableText">Ranking</string>
+    <string name="easyText">Easy</string>
+    <string name="MediumText">Medium</string>
+    <string name="hardText">Hard</string>
+    <string name="goBackText">Go Back</string>
+    <string name="goToMenuText">Menu</string>
+</resources>
