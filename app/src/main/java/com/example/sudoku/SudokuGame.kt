@@ -1,10 +1,8 @@
-package com.example.sudoku.Game
+package com.example.sudoku
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.example.sudoku.SudokuGame
 
-class FragmentGameViewModel : ViewModel() {
+class SudokuGame {
     var selectedCellLiveData = MutableLiveData<Pair<Int, Int>>()
 
     private var selectedRow = -1

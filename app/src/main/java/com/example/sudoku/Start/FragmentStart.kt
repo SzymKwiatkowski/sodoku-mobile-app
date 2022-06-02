@@ -9,7 +9,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import com.example.sudoku.R
 import com.example.sudoku.databinding.FragmentStartBinding
-import kotlin.system.exitProcess
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,19 +29,15 @@ class FragmentStart : Fragment(R.layout.fragment_start) {
             inflater, R.layout.fragment_start, container, false)
 
         binding.btnEasy.setOnClickListener{
-            findNavController().navigate(R.id.action_fragmentEntry_to_fragmentStart)
+            findNavController().navigate(FragmentStartDirections.actionFragmentStartToFragmentGame2())
         }
 
         binding.btnMedium.setOnClickListener{
-            findNavController().navigate(R.id.action_fragmentEntry_to_fragmentTable2)
+            findNavController().navigate(FragmentStartDirections.actionFragmentStartToFragmentGame2())
         }
 
         binding.btnHard.setOnClickListener{
-            exitProcess(0)
-        }
-
-        binding.btnBack.setOnClickListener{
-            findNavController().navigate(R.id.action_fragmentStart_to_fragmentEntry)
+            findNavController().navigate(FragmentStartDirections.actionFragmentStartToFragmentGame2())
         }
 
         return binding.root

@@ -39,13 +39,6 @@ class FragmentTable : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_table_list, container, false)
 
-        val binding: FragmentTableBinding = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_table, container, false)
-//        binding.btnMenu.visibility = View.VISIBLE
-//
-//        binding.btnMenu.setOnClickListener {
-//            findNavController().navigate(FragmentTableDirections.actionGlobalFragmentEntry())
-//        }
         // Set the adapter
         if (view is RecyclerView) {
             with(view) {

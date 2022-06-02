@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/fragmentEntry"
-        android:name="com.example.sudoku.FragmentEntry"
+        android:name="com.example.sudoku.Entry.FragmentEntry"
         android:label="fragment_entry"
         tools:layout="@layout/fragment_entry" >
         <action
@@ -31,7 +31,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragmentGame"
-        android:name="com.example.sudoku.FragmentGame"
+        android:name="com.example.sudoku.Game.FragmentGame"
         android:label="fragment_game"
         tools:layout="@layout/fragment_game" >
         <action
@@ -48,4 +48,8 @@
             app:destination="@id/fragmentEntry" />
     </fragment>
     <action android:id="@+id/action_global_fragmentEntry" app:destination="@id/fragmentEntry" />
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.example.sudoku.MainActivity"
+        android:label="MainActivity" />
 </navigation>
