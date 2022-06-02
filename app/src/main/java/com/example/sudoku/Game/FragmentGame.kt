@@ -22,20 +22,13 @@ class FragmentGame : Fragment(), SudokuBoardView.OnTouchListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        val viewRoot = LayoutInflater.from(this).inflate(R.layout.fragment_game, container, false)
-//        val binding: ViewDataBinding? = DataBindingUtil.bind(viewRoot)
+        val view = inflater.inflate(R.layout.fragment_game, container, false)
 
-        val view = inflater.inflate(R.id.sudokuBoardView, container, false)
-        val binding: FragmentEntryBinding = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_entry, container, false)
-//
-//        val binding: SudokuBoardView = SudokuBoardView.inflate(getLayoutInflater(), view, false)
-//        binding.
         view.sudokuBoardView.registerListener(this)
         viewModel = ViewModelProviders.of(this).get(FragmentGameViewModel::class.java)
         viewModel.selectedCellLiveData.observe(viewLifecycleOwner) { cell ->
-            sudokuBoardView.updateSelectedCellUI(cell.first, cell.second) }
-        return binding.root
+            view.sudokuBoardView.updateSelectedCellUI(cell.first, cell.second) }
+        return view
     }
 
     override fun onCellTouched(row: Int, column: Int) {
