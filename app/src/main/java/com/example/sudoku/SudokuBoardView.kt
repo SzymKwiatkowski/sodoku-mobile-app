@@ -46,7 +46,22 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(contex
     private val textPaint = Paint().apply {
         style = Paint.Style.FILL_AND_STROKE
         color = Color.WHITE
+//        textSize = 20F
     }
+
+    private val startingCellTextPaint = Paint().apply {
+        style = Paint.Style.FILL_AND_STROKE
+        color = Color.WHITE
+//        textSize = 25F
+//        typeface = Typeface.DEFAULT_BOLD
+    }
+
+    private val startingCellPaint = Paint().apply {
+//        style = Paint.Style.FILL_AND_STROKE
+//        color = Color.parseColor("3C256F")
+    }
+
+
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -65,13 +80,17 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(contex
         cells?.forEach {
             val valueString = it.value.toString()
 
+            val paintToUse = when (it.isStartingCell){
+                false -> textPaint
+                true -> startingCellTextPaint
+            }
             val textBounds = Rect()
-            textPaint.getTextBounds(valueString, 0, valueString.length, textBounds)
-            val textWidth = textPaint.measureText(valueString)
+            paintToUse.getTextBounds(valueString, 0, valueString.length, textBounds)
+            val textWidth = paintToUse.measureText(valueString)
             val textHeight = textBounds.height()
 
             canvas.drawText(valueString, (it.column * cellSizePixels) + cellSizePixels / 2 - textWidth / 2,
-            (it.row * cellSizePixels) + cellSizePixels / 2 - textHeight / 2, textPaint)
+            (it.row * cellSizePixels) + cellSizePixels / 2 - textHeight / 2, paintToUse)
         }
     }
 
@@ -81,14 +100,15 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(contex
         cells?.forEach {
             val r = it.row
             val c = it.column
-            if (r == selectedRow && c == selectedColumn){
+            if (it.isStartingCell){
+                fillCell(canvas, r, c, startingCellPaint)
+            } else if (r == selectedRow && c == selectedColumn){
                 fillCell(canvas, r, c, selectedCellPaint)
             } else if (r == selectedRow || c == selectedColumn){
                 fillCell(canvas, r, c, conflictingCellPaint)
             } else if (r/sqrtSize == selectedRow / sqrtSize && c/sqrtSize == selectedColumn/sqrtSize) {
                 fillCell(canvas, r, c, conflictingCellPaint)
             }
-
         }
     }
     private fun fillCell(canvas: Canvas, r: Int, c: Int, paint: Paint){

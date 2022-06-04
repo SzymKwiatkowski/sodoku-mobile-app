@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -14,24 +15,11 @@
     android:background="@color/backgroundColor"
     tools:context=".FragmentGame">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/sudokuBoardView"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="2dp"
-        android:layout_marginRight="2dp"
-        android:layout_marginBottom="7dp"
-        android:max="100"
-        android:progress="0" />
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/sudokuBoardView"
+        android:layout_above="@id/gridLayout"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="2dp"
         android:layout_marginBottom="2dp"

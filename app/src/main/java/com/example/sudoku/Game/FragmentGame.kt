@@ -11,8 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.example.sudoku.Cell
 import com.example.sudoku.R
 import com.example.sudoku.SudokuBoardView
-import com.example.sudoku.databinding.ActivityMainBinding.inflate
-import com.example.sudoku.databinding.FragmentEntryBinding
+import com.example.sudoku.databinding.FragmentGameBinding
 import kotlinx.android.synthetic.main.fragment_game.*
 import kotlinx.android.synthetic.main.fragment_game.view.*
 
@@ -24,6 +23,14 @@ class FragmentGame : Fragment(), SudokuBoardView.OnTouchListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_game, container, false)
+        val binding: FragmentGameBinding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.fragment_game,
+            container,
+            false
+        )
+        binding.fragmentGameViewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
 
         view.sudokuBoardView.registerListener(this)
         viewModel = ViewModelProviders.of(this).get(FragmentGameViewModel::class.java)
@@ -31,7 +38,6 @@ class FragmentGame : Fragment(), SudokuBoardView.OnTouchListener {
             view.sudokuBoardView.updateSelectedCellUI(cell.first, cell.second) }
         viewModel.cellsLiveData.observe(viewLifecycleOwner) { updateCells(it) }
 
-        view.progressBar.progress = 10
         return view
     }
 
@@ -42,8 +48,4 @@ class FragmentGame : Fragment(), SudokuBoardView.OnTouchListener {
     override fun onCellTouched(row: Int, column: Int) {
         viewModel.updateSelectedCell(row, column)
     }
-
-//    private fun buttonsOnClick(number: Int) {
-//        viewModel.handleInput(number)
-//    }
 }
