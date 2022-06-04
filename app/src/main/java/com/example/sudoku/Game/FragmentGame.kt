@@ -5,13 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProviders
 import com.example.sudoku.Cell
 import com.example.sudoku.R
 import com.example.sudoku.SudokuBoardView
-import com.example.sudoku.databinding.FragmentGameBinding
 import kotlinx.android.synthetic.main.fragment_game.*
 import kotlinx.android.synthetic.main.fragment_game.view.*
 
@@ -23,21 +20,27 @@ class FragmentGame : Fragment(), SudokuBoardView.OnTouchListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_game, container, false)
-        val binding: FragmentGameBinding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.fragment_game,
-            container,
-            false
-        )
-        binding.fragmentGameViewModel = viewModel
-        binding.lifecycleOwner = viewLifecycleOwner
 
+        // setting listener and live data
         view.sudokuBoardView.registerListener(this)
         viewModel = ViewModelProviders.of(this).get(FragmentGameViewModel::class.java)
         viewModel.selectedCellLiveData.observe(viewLifecycleOwner) { cell ->
             view.sudokuBoardView.updateSelectedCellUI(cell.first, cell.second) }
         viewModel.cellsLiveData.observe(viewLifecycleOwner) { updateCells(it) }
 
+        view.textView.visibility = View.VISIBLE
+        view.gridLayout.visibility = View.VISIBLE
+
+        // user input
+        val buttonsList = listOf(view.oneBtn, view.twoBtn, view.threeBtn, view.fourBtn, view.fiveBtn,
+            view.sixBtn, view.sevenBtn, view.eightBtn, view.nineBtn)
+        buttonsList.forEachIndexed { index, button ->
+            button.setOnClickListener {
+                viewModel.handleInput(index + 1)
+            }
+        }
+        
+        
         return view
     }
 

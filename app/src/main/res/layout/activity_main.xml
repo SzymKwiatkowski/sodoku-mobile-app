@@ -24,10 +24,11 @@
 
         <Button
             android:id="@+id/btnExit"
-            android:layout_width="195dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/quitText"
             android:backgroundTint="@color/btnColor"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnHome"
             app:layout_constraintHorizontal_bias="0.5"
@@ -35,10 +36,11 @@
 
         <Button
             android:id="@+id/btnHome"
-            android:layout_width="195dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/goToMenuText"
             android:backgroundTint="@color/btnColor"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/fragmentCV"
             app:layout_constraintHorizontal_bias="0.5"

@@ -1,13 +1,12 @@
 package com.example.sudoku
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Rect
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import org.chromium.base.Promise
+import org.chromium.base.task.AsyncTask
 import kotlin.math.min
 
 class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(context, attributeSet) {
@@ -16,8 +15,8 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(contex
     private val size = 9
 
     private var cellSizePixels = 0F
-    private var selectedRow = 8
-    private var selectedColumn = 8
+    private var selectedRow = 0
+    private var selectedColumn = 0
 
     private var listener: OnTouchListener? = null
 
@@ -25,65 +24,68 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(contex
         style = Paint.Style.STROKE
         color = Color.WHITE
         strokeWidth = 6F
+        alpha = 230
     }
 
     private val thinLinePaint = Paint().apply{
         style = Paint.Style.STROKE
         color = Color.WHITE
-        strokeWidth = 4F
+        strokeWidth = 3F
+        alpha = 100
     }
 
     private val selectedCellPaint = Paint().apply {
         style = Paint.Style.FILL_AND_STROKE
         color = Color.parseColor("#6EAD3A")
+        alpha = 100
     }
 
     private val conflictingCellPaint = Paint().apply {
         style = Paint.Style.FILL_AND_STROKE
         color = Color.parseColor("#2d3250")
+        alpha = 200
     }
 
     private val textPaint = Paint().apply {
         style = Paint.Style.FILL_AND_STROKE
         color = Color.WHITE
-//        textSize = 20F
+        textSize = 50F
+        alpha = 200
     }
 
     private val startingCellTextPaint = Paint().apply {
         style = Paint.Style.FILL_AND_STROKE
-        color = Color.WHITE
-//        textSize = 25F
-//        typeface = Typeface.DEFAULT_BOLD
+        color = Color.CYAN
+        textSize = 50F
+        alpha = 200
     }
 
     private val startingCellPaint = Paint().apply {
-//        style = Paint.Style.FILL_AND_STROKE
-//        color = Color.parseColor("3C256F")
+        style = Paint.Style.FILL_AND_STROKE
+        color = Color.parseColor("#3C256F")
+        alpha = 200
     }
-
-
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        val sizePixels = min(widthMeasureSpec, heightMeasureSpec)
+        val sizePixels = min(widthMeasureSpec, heightMeasureSpec) - 20
         setMeasuredDimension(sizePixels, sizePixels)
     }
 
     override fun onDraw(canvas: Canvas) {
         cellSizePixels = (width / size).toFloat()
+
         fillCells(canvas)
         drawLines(canvas)
         drawText(canvas)
     }
 
+
     private fun drawText(canvas: Canvas) {
         cells?.forEach {
             val valueString = it.value.toString()
 
-            val paintToUse = when (it.isStartingCell){
-                false -> textPaint
-                true -> startingCellTextPaint
-            }
+            val paintToUse = if (it.isStartingCell) startingCellTextPaint else textPaint
             val textBounds = Rect()
             paintToUse.getTextBounds(valueString, 0, valueString.length, textBounds)
             val textWidth = paintToUse.measureText(valueString)
@@ -111,6 +113,7 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(contex
             }
         }
     }
+
     private fun fillCell(canvas: Canvas, r: Int, c: Int, paint: Paint){
         canvas.drawRect(c * cellSizePixels, r * cellSizePixels, (c+1) * cellSizePixels, (r+1) * cellSizePixels, paint)
     }
@@ -173,3 +176,4 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(contex
         fun onCellTouched(row: Int, column: Int)
     }
 }
+
