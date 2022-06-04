@@ -1,4 +1,4 @@
-package com.example.sudoku.Entry
+package com.example.sudoku.entry
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package com.example.sudoku
+package com.example.sudoku.table
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater

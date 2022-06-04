@@ -1,4 +1,4 @@
-package com.example.sudoku.Start
+package com.example.sudoku.start
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

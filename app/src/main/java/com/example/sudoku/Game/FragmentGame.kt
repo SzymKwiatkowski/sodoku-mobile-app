@@ -1,4 +1,4 @@
-package com.example.sudoku.Game
+package com.example.sudoku.game
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProviders
+import com.example.sudoku.Cell
 import com.example.sudoku.R
 import com.example.sudoku.SudokuBoardView
 import com.example.sudoku.databinding.ActivityMainBinding.inflate
@@ -28,10 +29,21 @@ class FragmentGame : Fragment(), SudokuBoardView.OnTouchListener {
         viewModel = ViewModelProviders.of(this).get(FragmentGameViewModel::class.java)
         viewModel.selectedCellLiveData.observe(viewLifecycleOwner) { cell ->
             view.sudokuBoardView.updateSelectedCellUI(cell.first, cell.second) }
+        viewModel.cellsLiveData.observe(viewLifecycleOwner) { updateCells(it) }
+
+        view.progressBar.progress = 10
         return view
+    }
+
+    private fun updateCells(cells: List<Cell>) = cells.let{
+        sudokuBoardView.updateCells(cells)
     }
 
     override fun onCellTouched(row: Int, column: Int) {
         viewModel.updateSelectedCell(row, column)
     }
+
+//    private fun buttonsOnClick(number: Int) {
+//        viewModel.handleInput(number)
+//    }
 }

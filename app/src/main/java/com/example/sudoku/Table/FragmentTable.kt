@@ -1,4 +1,4 @@
-package com.example.sudoku.Table
+package com.example.sudoku.table
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
-import com.example.sudoku.MyItemRecyclerViewAdapter
+import com.example.sudoku.table.MyItemRecyclerViewAdapter
 import com.example.sudoku.R
 import com.example.sudoku.databinding.FragmentEntryBinding
 import com.example.sudoku.databinding.FragmentTableBinding
