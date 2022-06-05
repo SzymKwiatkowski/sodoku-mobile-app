@@ -15,6 +15,7 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(contex
     private val size = 9
 
     private var cellSizePixels = 0F
+    private var noteSizePixels = 0F
     private var selectedRow = 0
     private var selectedColumn = 0
 
@@ -36,7 +37,7 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(contex
 
     private val selectedCellPaint = Paint().apply {
         style = Paint.Style.FILL_AND_STROKE
-        color = Color.parseColor("#6EAD3A")
+        color = Color.parseColor("#FF03DAC5")
         alpha = 100
     }
 
@@ -66,6 +67,20 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(contex
         alpha = 200
     }
 
+    private val noteTextPaint = Paint().apply {
+        style = Paint.Style.FILL_AND_STROKE
+        color = Color.parseColor("#FFBB86FC")
+        textSize = 25F
+        alpha = 200
+    }
+
+    private val wrongValueTextPaint = Paint().apply {
+        style = Paint.Style.FILL_AND_STROKE
+        color = Color.RED
+        textSize = 50F
+        alpha = 150
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         val sizePixels = min(widthMeasureSpec, heightMeasureSpec) - 20
@@ -73,26 +88,55 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(contex
     }
 
     override fun onDraw(canvas: Canvas) {
-        cellSizePixels = (width / size).toFloat()
+        updateMeasurments(width)
 
         fillCells(canvas)
         drawLines(canvas)
         drawText(canvas)
     }
 
+    private fun updateMeasurments(width: Int) {
+        cellSizePixels = (width / size).toFloat()
+        noteSizePixels = cellSizePixels / sqrtSize.toFloat()
+        noteTextPaint.textSize = noteSizePixels / 1.5F
+        startingCellTextPaint.textSize = cellSizePixels / 1.5F
+        textPaint.textSize = cellSizePixels / 1.5F
+        wrongValueTextPaint.textSize = cellSizePixels / 1.5F
+    }
+
 
     private fun drawText(canvas: Canvas) {
-        cells?.forEach {
-            val valueString = it.value.toString()
-
-            val paintToUse = if (it.isStartingCell) startingCellTextPaint else textPaint
+        cells?.forEach { cell ->
+            val value = cell.value
             val textBounds = Rect()
-            paintToUse.getTextBounds(valueString, 0, valueString.length, textBounds)
-            val textWidth = paintToUse.measureText(valueString)
-            val textHeight = textBounds.height()
 
-            canvas.drawText(valueString, (it.column * cellSizePixels) + cellSizePixels / 2 - textWidth / 2,
-            (it.row * cellSizePixels) + cellSizePixels / 2 - textHeight / 2, paintToUse)
+            if (value == 0) {
+                cell.notes.forEach { note ->
+                    val valueString = note.toString()
+                    val rowInCell = (note-1) / sqrtSize
+                    val columnInCell = (note-1) % sqrtSize
+                    noteTextPaint.getTextBounds(valueString, 0, valueString.length, textBounds)
+                    val textWidth = noteTextPaint.measureText(valueString)
+                    val textHeight = textBounds.height()
+
+                    canvas.drawText(
+                        valueString,
+                        (cell.column * cellSizePixels) + (columnInCell * noteSizePixels) + noteSizePixels / 2 - textWidth / 2f,
+                        (cell.row * cellSizePixels) + (rowInCell * noteSizePixels) + noteSizePixels / 2 + textHeight / 2f,
+                        noteTextPaint
+                    )
+                }
+            } else {
+                val valueString = value.toString()
+                val paintToUse = if (cell.isStartingCell) startingCellTextPaint else textPaint
+                paintToUse.getTextBounds(valueString, 0, valueString.length, textBounds)
+                val textWidth = paintToUse.measureText(valueString)
+                val textHeight = textBounds.height()
+                canvas.drawText(valueString,
+                    (cell.column * cellSizePixels) + cellSizePixels / 2 - textWidth / 2,
+                    (cell.row * cellSizePixels) + cellSizePixels / 2 + textHeight / 2,
+                    paintToUse)
+            }
         }
     }
 
