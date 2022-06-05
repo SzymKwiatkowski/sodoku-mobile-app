@@ -9,4 +9,5 @@
     <string name="goBackText">Wróć</string>
     <string name="goToMenuText">Menu</string>
     <string name="app_name">Sudoku</string>
+    <string name="youScoredText">Liczba Puntków:</string>
 </resources>

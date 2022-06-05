@@ -136,4 +136,14 @@
             android:scaleType="center"
             android:src="@drawable/edit_pen_black" />
     </GridLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="100dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_above="@id/sudokuBoardView"
+        android:layout_marginBottom="4dp"
+        android:layout_marginRight="4dp"/>
 </RelativeLayout> </layout>

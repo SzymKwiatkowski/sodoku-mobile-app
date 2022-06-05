@@ -1,7 +1,5 @@
 package com.example.sudoku.game
 
-import android.annotation.SuppressLint
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,22 +8,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import com.example.sudoku.Cell
 import com.example.sudoku.R
 import com.example.sudoku.SudokuBoardView
+import com.example.sudoku.score.FragmentScoreArgs
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.fragment_game.*
 import kotlinx.android.synthetic.main.fragment_game.view.*
-import org.chromium.base.Log
-import org.json.JSONArray
-import org.json.JSONObject
-import org.json.JSONTokener
 import java.io.IOException
-import java.io.InputStream
-import java.util.logging.Logger
 
 class FragmentGame : Fragment(), SudokuBoardView.OnTouchListener {
     private lateinit var viewModel: FragmentGameViewModel
@@ -46,10 +39,12 @@ class FragmentGame : Fragment(), SudokuBoardView.OnTouchListener {
         viewModel.cellsLiveData.observe(viewLifecycleOwner) { updateCells(it) }
         viewModel.isTakingNotesLiveData.observe(viewLifecycleOwner) { updateNoteTakingUI(it) }
         viewModel.highlightedKeysLiveData.observe(viewLifecycleOwner) { updateHighlightKeysUI(it) }
-
+        viewModel.scoreLiveData.observe(viewLifecycleOwner) { view.textView.text = it.toString() }
+        viewModel.progressLiveData.observe(viewLifecycleOwner) { view.progressBar.progress = (it * 100).toInt()}
+        viewModel.gameEndLiveData.observe(viewLifecycleOwner) { if(it) onGameFinished()}
 
         val listBoard = JSONListFromAsset()
-        viewModel.createBoard(listBoard)
+        viewModel.createBoard(listBoard, FragmentGameArgs.fromBundle(requireArguments()).difficulty)
         // user input
         buttonsList = listOf(view.oneBtn, view.twoBtn, view.threeBtn, view.fourBtn, view.fiveBtn,
             view.sixBtn, view.sevenBtn, view.eightBtn, view.nineBtn)
@@ -93,7 +88,6 @@ class FragmentGame : Fragment(), SudokuBoardView.OnTouchListener {
         return gson.fromJson(json, listIntType)
     }
 
-
     private fun updateHighlightKeysUI(set: Set<Int>) = set.let {
         buttonsList.forEachIndexed {index, button ->
             val color = if (set.contains(index+1)) Color.parseColor("#3C256F") else Color.LTGRAY
@@ -103,5 +97,11 @@ class FragmentGame : Fragment(), SudokuBoardView.OnTouchListener {
 
     override fun onCellTouched(row: Int, column: Int) {
         viewModel.updateSelectedCell(row, column)
+    }
+
+    private fun onGameFinished(){
+        val action = FragmentGameDirections.actionFragmentGameToFragmentScore()
+        action.score = viewModel.scoreLiveData.value!!
+        findNavController().navigate(action)
     }
 }

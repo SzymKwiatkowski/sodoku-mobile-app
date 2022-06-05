@@ -9,4 +9,5 @@
     <string name="hardText">Hard</string>
     <string name="goBackText">Go Back</string>
     <string name="goToMenuText">Menu</string>
+    <string name="youScoredText">You Scored:</string>
 </resources>

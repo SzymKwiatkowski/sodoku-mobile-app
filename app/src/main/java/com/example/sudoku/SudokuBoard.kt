@@ -10,5 +10,6 @@ class Cell(
     val column: Int,
     var value: Int,
     var isStartingCell: Boolean = false,
+    var wrongCell: Boolean = false,
     var notes: MutableSet<Int> = mutableSetOf()
 )

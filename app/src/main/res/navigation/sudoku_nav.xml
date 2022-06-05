@@ -37,6 +37,13 @@
         <action
             android:id="@+id/action_fragmentGame2_to_fragmentTable2"
             app:destination="@id/fragmentTable" />
+        <action
+            android:id="@+id/action_fragmentGame_to_fragmentScore"
+            app:destination="@id/fragmentScore" />
+        <argument
+            android:name="difficulty"
+            app:argType="com.example.sudoku.game.Difficulty"
+            android:defaultValue="EASY" />
     </fragment>
     <fragment
         android:id="@+id/fragmentTable"
@@ -52,4 +59,16 @@
         android:id="@+id/mainActivity"
         android:name="com.example.sudoku.MainActivity"
         android:label="MainActivity" />
+    <fragment
+        android:id="@+id/fragmentScore"
+        android:name="com.example.sudoku.score.FragmentScore"
+        android:label="FragmentScore" >
+        <action
+            android:id="@+id/action_fragmentScore_to_fragmentTable"
+            app:destination="@id/fragmentTable" />
+        <argument
+            android:name="score"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
 </navigation>

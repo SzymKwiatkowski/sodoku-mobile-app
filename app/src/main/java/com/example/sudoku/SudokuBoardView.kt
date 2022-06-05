@@ -5,8 +5,6 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import org.chromium.base.Promise
-import org.chromium.base.task.AsyncTask
 import kotlin.math.min
 
 class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(context, attributeSet) {
@@ -69,9 +67,8 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(contex
 
     private val noteTextPaint = Paint().apply {
         style = Paint.Style.FILL_AND_STROKE
-        color = Color.parseColor("#FFBB86FC")
+        color = Color.YELLOW//parseColor("#FFBB86FC")
         textSize = 25F
-        alpha = 200
     }
 
     private val wrongValueTextPaint = Paint().apply {
@@ -128,7 +125,8 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(contex
                 }
             } else {
                 val valueString = value.toString()
-                val paintToUse = if (cell.isStartingCell) startingCellTextPaint else textPaint
+                val paintToUse = if (cell.isStartingCell) startingCellTextPaint
+                    else if (cell.wrongCell) wrongValueTextPaint else textPaint
                 paintToUse.getTextBounds(valueString, 0, valueString.length, textBounds)
                 val textWidth = paintToUse.measureText(valueString)
                 val textHeight = textBounds.height()
@@ -143,10 +141,11 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(contex
     private fun fillCells(canvas: Canvas){
         if(selectedColumn == -1 || selectedRow == -1) return
 
+        var value = getCellValue(selectedRow, selectedColumn)
         cells?.forEach {
             val r = it.row
             val c = it.column
-            if (it.isStartingCell){
+            if (it.isStartingCell && it.value==value){
                 fillCell(canvas, r, c, startingCellPaint)
             } else if (r == selectedRow && c == selectedColumn){
                 fillCell(canvas, r, c, selectedCellPaint)
@@ -156,6 +155,16 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(contex
                 fillCell(canvas, r, c, conflictingCellPaint)
             }
         }
+    }
+
+    private fun getCellValue(r: Int, c :Int): Int{
+        var value = 0
+        cells?.forEach {
+            if (it.row == r && it.column == c) {
+                value = it.value
+            }
+        }
+        return value
     }
 
     private fun fillCell(canvas: Canvas, r: Int, c: Int, paint: Paint){

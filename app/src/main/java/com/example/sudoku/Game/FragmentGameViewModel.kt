@@ -9,17 +9,27 @@ import kotlin.math.sqrt
 
 class FragmentGameViewModel : ViewModel() {
     private var boardGenerated = listOf<Cell>()
+    private var boardCellsValues = mutableListOf<Int>()
 
     var selectedCellLiveData = MutableLiveData<Pair<Int, Int>>()
     var cellsLiveData = MutableLiveData<List<Cell>>()
     var scoreLiveData = MutableLiveData<Int>()
     var isTakingNotesLiveData = MutableLiveData<Boolean>()
     var highlightedKeysLiveData = MutableLiveData<Set<Int>>()
+    var progressLiveData = MutableLiveData<Float>()
+    var gameEndLiveData = MutableLiveData<Boolean>()
+    private var guessedNumber: Int = 0
 
     private var selectedRow = -1
     private var selectedColumn = -1
     private var isTakingNotes = false;
     private val size = 9
+    private var selectedDifficulty: Difficulty? = null
+
+//    private var difficultyTranslator: MutableMap<Difficulty?, Int> = mutableMapOf(Difficulty.EASY to 42,
+//    Difficulty.MEDIUM to 54, Difficulty.HARD to 66)
+    private var difficultyTranslator: MutableMap<Difficulty?, Int> = mutableMapOf(Difficulty.EASY to 1,
+        Difficulty.MEDIUM to 2, Difficulty.HARD to 3)
 
     private val board: SudokuBoard
 
@@ -31,14 +41,21 @@ class FragmentGameViewModel : ViewModel() {
         scoreLiveData.postValue(0)
         cellsLiveData.postValue(board.cells)
         isTakingNotesLiveData.postValue(isTakingNotes)
+        gameEndLiveData.postValue(false)
     }
 
     fun handleInput(number: Int){
         if (selectedColumn == -1 || selectedRow == -1) return
         val cell = board.getCell(selectedRow, selectedColumn)
+        if (!validateInput(selectedRow * 9 + selectedColumn, number) && !isTakingNotes) return
         if (cell.isStartingCell) return
 
+
         if (isTakingNotes) {
+            if (cell.wrongCell || cell.value > 0) {
+                board.cells[cell.row * 9 + cell.column].value = 0
+                board.cells[cell.row * 9 + cell.column].wrongCell = false
+            }
             if (cell.notes.contains(number)) {
                 cell.notes.remove(number)
             } else {
@@ -50,9 +67,30 @@ class FragmentGameViewModel : ViewModel() {
         cellsLiveData.postValue(board.cells)
     }
 
+    private fun validateInput(id: Int, number: Int): Boolean{
+        if (isTakingNotes) return true
+        return if (boardCellsValues[id] == number) {
+            incrementScore()
+            board.cells[id].isStartingCell = true
+            board.cells[id].value = number
+            cellsLiveData.postValue(board.cells)
+            true
+        } else {
+            board.cells[id].wrongCell = true
+            board.cells[id].value = number
+            scoreLiveData.postValue(0)
+            cellsLiveData.postValue(board.cells)
+            false
+        }
+    }
+
     fun updateSelectedCell(row: Int, column: Int){
         val cell = board.getCell(row, column)
         if (!cell.isStartingCell) {
+            selectedRow = row
+            selectedColumn = column
+            selectedCellLiveData.postValue(Pair(row, column))
+        } else {
             selectedRow = row
             selectedColumn = column
             selectedCellLiveData.postValue(Pair(row, column))
@@ -76,57 +114,49 @@ class FragmentGameViewModel : ViewModel() {
         highlightedKeysLiveData.postValue(curNotes)
     }
 
-    fun createBoard(boardValues: List<Int>){
+    fun createBoard(boardValues: List<Int>, difficulty: Difficulty){
+        selectedDifficulty = difficulty
+        progressLiveData.postValue(0F)
+        boardCellsValues = MutableList((size*size)) {i -> 0}
         val randomListValues = (1..9).shuffled().take(9)
         val randomListIds = (1..9).shuffled().take(9)
         var remapValues: MutableMap<Int,Int> = mutableMapOf(1 to 1, 2 to 2, 3 to 3, 4 to 4, 5 to 5,
             6 to 6, 7 to 7, 8 to 8, 9 to 9)
-
+        // Create random exchange of numbers
         for (i in randomListIds.indices){
             remapValues[randomListIds[i]] = randomListValues[i]
         }
-
+        // Remap with mapped out random values
         boardValues.forEachIndexed { index, i ->
+            boardCellsValues[index] = remapValues[i]!!
             boardGenerated[index].value = remapValues[i]!!
         }
+        // Write positions into live array object and save them
+        val randomPositions = (0 until (size*size)).shuffled().
+            take(difficultyTranslator[selectedDifficulty]!!)
+        board.cells.forEachIndexed { index, cell ->
+            if (randomPositions.contains(index)) {
+                board.cells[index].value = 0
+            } else {
+                board.cells[index].isStartingCell = true
+            }
+        }
 
-//        boardGenerated.forEachIndexed{ index, cell ->
-//            for (candidateNumber in randomList) {
-//                if (validateCellPosition(index, cell, candidateNumber)) {
-//                    boardGenerated[index].value = candidateNumber
-//                    break
-//                }
-//            }
-//        }
-        board.cells = boardGenerated
         cellsLiveData.postValue(board.cells)
     }
 
-//    private fun validateCellPosition(index: Int, cell: Cell, candidateNumber: Int): Boolean {
-//        var passed = true
-//        val column = cell.column
-//        val row = cell.row
-//        val sqrtSize = sqrt(size.toDouble()).toInt()
-//
-//
-//        boardGenerated.forEach {
-//            // row and column check
-//            if (row == it.row || column == it.column){
-//                if (candidateNumber == it.value) {
-//                    passed = false
-//                }
-//            }
-//            // square check
-//            else if (row/sqrtSize == it.row / sqrtSize && column/sqrtSize == it.column/sqrtSize) {
-//                if (candidateNumber == it.value) {
-//                    passed = false
-//                }
-//            }
-//        }
-//        return passed
-//    }
+    private fun incrementScore(){
+        val points = (20 + difficultyTranslator[selectedDifficulty]!! * 1) * 2
+        scoreLiveData.postValue(scoreLiveData.value?.plus(points))
+        guessedNumber++
+        progressLiveData.postValue(guessedNumber.toFloat()/(difficultyTranslator[selectedDifficulty]!!))
 
-    fun incrementScore(){
-        scoreLiveData.postValue(scoreLiveData.value?.plus(10))
+        if (guessedNumber >= difficultyTranslator[selectedDifficulty]!!) {
+            gameEndLiveData.postValue(true)
+        }
     }
+}
+
+enum class Difficulty {
+    EASY, MEDIUM, HARD
 }

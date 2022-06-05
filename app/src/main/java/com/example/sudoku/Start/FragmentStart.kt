@@ -9,6 +9,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import com.example.sudoku.R
 import com.example.sudoku.databinding.FragmentStartBinding
+import com.example.sudoku.game.Difficulty
+import com.example.sudoku.game.FragmentGameDirections
 
 class FragmentStart : Fragment(R.layout.fragment_start) {
     override fun onCreateView(
@@ -19,15 +21,21 @@ class FragmentStart : Fragment(R.layout.fragment_start) {
             inflater, R.layout.fragment_start, container, false)
 
         binding.btnEasy.setOnClickListener{
-            findNavController().navigate(FragmentStartDirections.actionFragmentStartToFragmentGame2())
+            val action =FragmentStartDirections.actionFragmentStartToFragmentGame2()
+            action.difficulty = Difficulty.EASY
+            findNavController().navigate(action)
         }
 
         binding.btnMedium.setOnClickListener{
-            findNavController().navigate(FragmentStartDirections.actionFragmentStartToFragmentGame2())
+            val action =FragmentStartDirections.actionFragmentStartToFragmentGame2()
+            action.difficulty = Difficulty.MEDIUM
+            findNavController().navigate(action)
         }
 
         binding.btnHard.setOnClickListener{
-            findNavController().navigate(FragmentStartDirections.actionFragmentStartToFragmentGame2())
+            val action =FragmentStartDirections.actionFragmentStartToFragmentGame2()
+            action.difficulty = Difficulty.HARD
+            findNavController().navigate(action)
         }
 
         return binding.root
