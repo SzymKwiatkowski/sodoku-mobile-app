@@ -52,7 +52,7 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(contex
         alpha = 200
     }
 
-    private val startingCellTextPaint = Paint().apply {
+    private val lockedCellTextPaint = Paint().apply {
         style = Paint.Style.FILL_AND_STROKE
         color = Color.CYAN
         textSize = 50F
@@ -96,7 +96,7 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(contex
         cellSizePixels = (width / size).toFloat()
         noteSizePixels = cellSizePixels / sqrtSize.toFloat()
         noteTextPaint.textSize = noteSizePixels / 1.5F
-        startingCellTextPaint.textSize = cellSizePixels / 1.5F
+        lockedCellTextPaint.textSize = cellSizePixels / 1.5F
         textPaint.textSize = cellSizePixels / 1.5F
         wrongValueTextPaint.textSize = cellSizePixels / 1.5F
     }
@@ -125,7 +125,7 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(contex
                 }
             } else {
                 val valueString = value.toString()
-                val paintToUse = if (cell.isStartingCell) startingCellTextPaint
+                val paintToUse = if (cell.isLockedCell) lockedCellTextPaint
                     else if (cell.wrongCell) wrongValueTextPaint else textPaint
                 paintToUse.getTextBounds(valueString, 0, valueString.length, textBounds)
                 val textWidth = paintToUse.measureText(valueString)
@@ -141,11 +141,11 @@ class SudokuBoardView(context: Context, attributeSet: AttributeSet): View(contex
     private fun fillCells(canvas: Canvas){
         if(selectedColumn == -1 || selectedRow == -1) return
 
-        var value = getCellValue(selectedRow, selectedColumn)
+        val value = getCellValue(selectedRow, selectedColumn)
         cells?.forEach {
             val r = it.row
             val c = it.column
-            if (it.isStartingCell && it.value==value){
+            if (it.isLockedCell && it.value==value){
                 fillCell(canvas, r, c, startingCellPaint)
             } else if (r == selectedRow && c == selectedColumn){
                 fillCell(canvas, r, c, selectedCellPaint)

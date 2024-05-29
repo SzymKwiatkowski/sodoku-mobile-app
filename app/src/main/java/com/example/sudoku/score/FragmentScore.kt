@@ -25,6 +25,7 @@ class FragmentScore : Fragment() {
         binding.scoreViewModel = viewModel
         viewModel.score.observe(viewLifecycleOwner) { binding.scoreTextView.text = it.toString() }
 
+        binding.btnTableScore.visibility = View.INVISIBLE
         binding.btnTableScore.setOnClickListener {
             findNavController().navigate(FragmentScoreDirections.actionFragmentScoreToFragmentTable())
         }

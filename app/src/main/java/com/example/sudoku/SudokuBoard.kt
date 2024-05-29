@@ -9,7 +9,7 @@ class Cell(
     val row: Int,
     val column: Int,
     var value: Int,
-    var isStartingCell: Boolean = false,
+    var isLockedCell: Boolean = false,
     var wrongCell: Boolean = false,
     var notes: MutableSet<Int> = mutableSetOf()
 )

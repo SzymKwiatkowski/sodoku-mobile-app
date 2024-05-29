@@ -19,11 +19,15 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.fragment_game.*
 import kotlinx.android.synthetic.main.fragment_game.view.*
 import java.io.IOException
+import java.lang.String.format
+import java.text.DateFormat
+import java.util.*
 
 class FragmentGame : Fragment(), SudokuBoardView.OnTouchListener {
     private lateinit var viewModel: FragmentGameViewModel
     private lateinit var buttonsList: List<Button>
     private lateinit var notesBtn: ImageButton
+    private var time = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,6 +46,7 @@ class FragmentGame : Fragment(), SudokuBoardView.OnTouchListener {
         viewModel.scoreLiveData.observe(viewLifecycleOwner) { view.textView.text = it.toString() }
         viewModel.progressLiveData.observe(viewLifecycleOwner) { view.progressBar.progress = (it * 100).toInt()}
         viewModel.gameEndLiveData.observe(viewLifecycleOwner) { if(it) onGameFinished()}
+        viewModel.textClockLiveData.observe(viewLifecycleOwner) { view.txtClock.text = it }
 
         val listBoard = JSONListFromAsset()
         viewModel.createBoard(listBoard, FragmentGameArgs.fromBundle(requireArguments()).difficulty)
@@ -57,6 +62,21 @@ class FragmentGame : Fragment(), SudokuBoardView.OnTouchListener {
         notesBtn.setOnClickListener {
             viewModel.changedNoteTakingState()
         }
+        time = 0
+        val thread: Thread = object : Thread() {
+            override fun run() {
+                try {
+                    while (!this.isInterrupted) {
+                        sleep(1000)
+                        time++
+                        val stringTime = String.format("%02d:%02d", time / 60, time % 60)
+                        viewModel.postTextClock(stringTime)
+                    }
+                } catch (e: InterruptedException) {
+                }
+            }
+        }
+        thread.start()
 
         return view
     }

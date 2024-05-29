@@ -7,6 +7,10 @@ import com.example.sudoku.SudokuBoard
 import java.util.*
 import kotlin.math.sqrt
 
+enum class Difficulty {
+    EASY, MEDIUM, HARD
+}
+
 class FragmentGameViewModel : ViewModel() {
     private var boardGenerated = listOf<Cell>()
     private var boardCellsValues = mutableListOf<Int>()
@@ -18,6 +22,7 @@ class FragmentGameViewModel : ViewModel() {
     var highlightedKeysLiveData = MutableLiveData<Set<Int>>()
     var progressLiveData = MutableLiveData<Float>()
     var gameEndLiveData = MutableLiveData<Boolean>()
+    var textClockLiveData = MutableLiveData<String>()
     private var guessedNumber: Int = 0
 
     private var selectedRow = -1
@@ -26,10 +31,10 @@ class FragmentGameViewModel : ViewModel() {
     private val size = 9
     private var selectedDifficulty: Difficulty? = null
 
-//    private var difficultyTranslator: MutableMap<Difficulty?, Int> = mutableMapOf(Difficulty.EASY to 42,
-//    Difficulty.MEDIUM to 54, Difficulty.HARD to 66)
-    private var difficultyTranslator: MutableMap<Difficulty?, Int> = mutableMapOf(Difficulty.EASY to 1,
-        Difficulty.MEDIUM to 2, Difficulty.HARD to 3)
+    private var difficultyTranslator: MutableMap<Difficulty?, Int> = mutableMapOf(Difficulty.EASY to 25,
+    Difficulty.MEDIUM to 40, Difficulty.HARD to 54)
+//    private var difficultyTranslator: MutableMap<Difficulty?, Int> = mutableMapOf(Difficulty.EASY to 1,
+//        Difficulty.MEDIUM to 2, Difficulty.HARD to 3)
 
     private val board: SudokuBoard
 
@@ -48,7 +53,7 @@ class FragmentGameViewModel : ViewModel() {
         if (selectedColumn == -1 || selectedRow == -1) return
         val cell = board.getCell(selectedRow, selectedColumn)
         if (!validateInput(selectedRow * 9 + selectedColumn, number) && !isTakingNotes) return
-        if (cell.isStartingCell) return
+        if (cell.isLockedCell) return
 
 
         if (isTakingNotes) {
@@ -71,7 +76,7 @@ class FragmentGameViewModel : ViewModel() {
         if (isTakingNotes) return true
         return if (boardCellsValues[id] == number) {
             incrementScore()
-            board.cells[id].isStartingCell = true
+            board.cells[id].isLockedCell = true
             board.cells[id].value = number
             cellsLiveData.postValue(board.cells)
             true
@@ -86,7 +91,7 @@ class FragmentGameViewModel : ViewModel() {
 
     fun updateSelectedCell(row: Int, column: Int){
         val cell = board.getCell(row, column)
-        if (!cell.isStartingCell) {
+        if (!cell.isLockedCell) {
             selectedRow = row
             selectedColumn = column
             selectedCellLiveData.postValue(Pair(row, column))
@@ -138,7 +143,7 @@ class FragmentGameViewModel : ViewModel() {
             if (randomPositions.contains(index)) {
                 board.cells[index].value = 0
             } else {
-                board.cells[index].isStartingCell = true
+                board.cells[index].isLockedCell = true
             }
         }
 
@@ -146,7 +151,7 @@ class FragmentGameViewModel : ViewModel() {
     }
 
     private fun incrementScore(){
-        val points = (20 + difficultyTranslator[selectedDifficulty]!! * 1) * 2
+        val points = (10 + difficultyTranslator[selectedDifficulty]!! * 1) * 3
         scoreLiveData.postValue(scoreLiveData.value?.plus(points))
         guessedNumber++
         progressLiveData.postValue(guessedNumber.toFloat()/(difficultyTranslator[selectedDifficulty]!!))
@@ -155,8 +160,9 @@ class FragmentGameViewModel : ViewModel() {
             gameEndLiveData.postValue(true)
         }
     }
+
+    fun postTextClock(valueString: String){
+        textClockLiveData.postValue(valueString)
+    }
 }
 
-enum class Difficulty {
-    EASY, MEDIUM, HARD
-}

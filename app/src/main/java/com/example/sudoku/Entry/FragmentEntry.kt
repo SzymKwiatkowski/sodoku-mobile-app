@@ -18,6 +18,7 @@ class FragmentEntry : Fragment(R.layout.fragment_entry) {
         val binding: FragmentEntryBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_entry, container, false)
 
+        binding.btnTable.visibility = View.INVISIBLE
         binding.btnStart.setOnClickListener{
             findNavController().navigate(FragmentEntryDirections.actionFragmentEntryToFragmentStart())
         }
